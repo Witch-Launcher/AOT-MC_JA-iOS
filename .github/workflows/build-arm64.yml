@@ -1,0 +1,105 @@
+name: Build MC Native Image (arm64)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Build mode'
+        required: true
+        default: 'server'
+        type: choice
+        options:
+          - server
+          - client
+          - both
+      mc_version:
+        description: 'Minecraft version'
+        required: true
+        default: '1.20.1'
+
+env:
+  GRAALVM_VERSION: "gluon-23+25.1-dev-2409082136"
+  GRAALVM_TAG: "jvmci-25.1-b19"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'graalvm'
+
+      - name: Download Gluon GraalVM
+        run: |
+          GRAALVM_DIR="$HOME/graalvm"
+          mkdir -p "$GRAALVM_DIR"
+
+          echo "Downloading Gluon GraalVM ${{ env.GRAALVM_VERSION }}..."
+          curl -L "https://github.com/gluonhq/graal/releases/download/${{ env.GRAALVM_VERSION }}/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev.tar.gz" \
+            -o /tmp/graalvm.tar.gz
+
+          tar -xzf /tmp/graalvm.tar.gz -C /tmp/
+          EXTRACTED=$(find /tmp -maxdepth 1 -type d -name "graalvm-java*" | head -1)
+
+          # Handle macOS app bundle structure
+          if [[ -d "$EXTRACTED/Contents/Home" ]]; then
+            mv "$EXTRACTED/Contents/Home" "$GRAALVM_DIR"
+          else
+            mv "$EXTRACTED" "$GRAALVM_DIR"
+          fi
+
+          echo "GRAALVM_HOME=$GRAALVM_DIR" >> $GITHUB_ENV
+          echo "$GRAALVM_DIR/bin" >> $GITHUB_PATH
+          rm -f /tmp/graalvm.tar.gz
+
+      - name: Download labs-openjdk static libs
+        run: |
+          echo "Downloading labs-openjdk static libraries..."
+          curl -L "https://github.com/graalvm/labs-openjdk/releases/download/${{ env.GRAALVM_TAG }}/labsjdk-ce-25.0.3+9-${{ env.GRAALVM_TAG }}-darwin-aarch64.tar.gz" \
+            -o /tmp/labsjdk.tar.gz
+
+          tar -xzf /tmp/labsjdk.tar.gz -C /tmp/
+          LABS_DIR=$(find /tmp -maxdepth 1 -type d -name "labsjdk-ce-*" | head -1)
+          STATIC_SRC="$LABS_DIR/Contents/Home/lib/static/darwin-aarch64"
+          STATIC_DST="$GRAALVM_HOME/lib/static/darwin-aarch64"
+
+          mkdir -p "$STATIC_DST"
+          cp "$STATIC_SRC"/*.a "$STATIC_DST/"
+          echo "Copied $(ls "$STATIC_DST"/*.a | wc -l) static libraries"
+          rm -f /tmp/labsjdk.tar.gz
+          rm -rf "$LABS_DIR"
+
+      - name: Verify GraalVM
+        run: |
+          echo "GraalVM: $($GRAALVM_HOME/bin/native-image --version)"
+          echo "Static libs: $(ls $GRAALVM_HOME/lib/static/darwin-aarch64/*.a | wc -l) files"
+
+      - name: Fetch Minecraft ${{ github.event.inputs.mc_version }}
+        run: |
+          bash scripts/fetch_minecraft.sh ${{ github.event.inputs.mc_version }}
+
+      - name: Build server native image
+        if: github.event.inputs.mode == 'server' || github.event.inputs.mode == 'both'
+        run: |
+          bash scripts/build_native_desktop.sh server ${{ github.event.inputs.mc_version }}
+
+      - name: Build client native image
+        if: github.event.inputs.mode == 'client' || github.event.inputs.mode == 'both'
+        run: |
+          bash scripts/build_native_desktop.sh client ${{ github.event.inputs.mc_version }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mc-${{ github.event.inputs.mc_version }}-native-arm64
+          path: |
+            ${{ github.workspace }}/build/minecraft/*-native
+          retention-days: 7
+          if-no-files-found: error

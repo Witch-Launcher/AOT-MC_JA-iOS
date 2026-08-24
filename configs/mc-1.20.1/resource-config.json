@@ -1,0 +1,313 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\QMETA-INF/log4j-provider.properties\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.nio.file.spi.FileSystemProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/javax.xml.parsers.DocumentBuilderFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.core.util.WatchEventService\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
+      },
+      {
+        "pattern": "\\Qassets/.mcassetsroot\\E"
+      },
+      {
+        "pattern": "\\Qassets/minecraft/lang/en_us.json\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/jna/darwin-x86-64/libjnidispatch.jnilib\\E"
+      },
+      {
+        "pattern": "\\Qdata/.mcassetsroot\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.jsn\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.json\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.xml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.yaml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test.yml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.jsn\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.json\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.xml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.yaml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2-test2626b418.yml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.StatusLogger.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.component.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.jsn\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.json\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.simplelog.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.system.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.xml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.yaml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j2.yml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.jsn\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.json\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.properties\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.xml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.yaml\\E"
+      },
+      {
+        "pattern": "\\Qlog4j22626b418.yml\\E"
+      },
+      {
+        "pattern": "\\Qoshi.architecture.properties\\E"
+      },
+      {
+        "pattern": "\\Qoshi.properties\\E"
+      },
+      {
+        "pattern": "\\Qversion.json\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Boolean.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Byte.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Class.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Double.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Float.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Integer.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Long.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Number.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/Short.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjava/lang/reflect/Modifier.class\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfc.nrm\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfkc.nrm\\E"
+      },
+      {
+        "pattern": "java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
+      },
+      {
+        "pattern": "java.base:\\Qsun/net/idn/uidna.spp\\E"
+      },
+      {
+        "pattern": "java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/HotSpotBackend.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/amd64/AMD64MathStub.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/ClassGetHubNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/DigestBaseSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/HotSpotAllocationSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/HotSpotHashCodeSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/HotSpotIsArraySnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/HotSpotReplacementsUtil.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/InstanceOfSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/LoadExceptionObjectSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/MonitorSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/ObjectCloneSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/ObjectSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/RegisterFinalizerSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/TypeCheckSnippetUtils.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/replacements/arraycopy/HotSpotArraycopySnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/stubs/ExceptionHandlerStub.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/stubs/ForeignCallSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/hotspot/stubs/IntrinsicStubsGen.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/nodes/PiNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/nodes/java/DynamicNewArrayNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/nodes/java/DynamicNewInstanceNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/nodes/java/NewArrayNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/AllocationSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/BoxingSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/IdentityHashCodeSnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/IsArraySnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/ReplacementsUtil.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/SnippetCounter.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/SnippetIntegerHistogram.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/StringLatin1Snippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/arraycopy/ArrayCopyCallNode.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/arraycopy/ArrayCopySnippets.class\\E"
+      },
+      {
+        "pattern": "jdk.graal.compiler:\\Qjdk/graal/compiler/replacements/arraycopy/ArrayCopyWithDelayedLoweringNode.class\\E"
+      },
+      {
+        "pattern": "jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
+      },
+      {
+        "pattern": "jdk.jfr:\\Qjdk/jfr/internal/types/metadata.bin\\E"
+      },
+      {
+        "pattern": "org.graalvm.word:\\Qorg/graalvm/word/LocationIdentity.class\\E"
+      }
+    ]
+  },
+  "bundles": []
+}

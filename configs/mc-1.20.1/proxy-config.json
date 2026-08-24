@@ -1,0 +1,6 @@
+[
+  ["com.sun.jna.platform.mac.CoreFoundation"],
+  ["com.sun.jna.platform.mac.IOKit"],
+  ["com.sun.jna.platform.mac.SystemB"],
+  ["oshi.jna.platform.mac.SystemB"]
+]
