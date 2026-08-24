@@ -22,8 +22,9 @@ on:
         default: '1.20.1'
 
 env:
-  GRAALVM_VERSION: "gluon-23+25.1-dev-2409082136"
-  GRAALVM_TAG: "jvmci-25.1-b19"
+  GRAALVM_TAG: "gluon-23+25.1-dev-2409082136"
+  LABS_JDK_TAG: "jvmci-25.1-b19"
+  LABS_JDK_VERSION: "labsjdk-ce-25.0.3+9"
 
 jobs:
   build:
@@ -34,43 +35,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 23
-        uses: actions/setup-java@v4
-        with:
-          java-version: '23'
-          distribution: 'graalvm'
-
       - name: Download Gluon GraalVM
         run: |
           GRAALVM_DIR="$HOME/graalvm"
           mkdir -p "$GRAALVM_DIR"
 
-          echo "Downloading Gluon GraalVM ${{ env.GRAALVM_VERSION }}..."
-          curl -L "https://github.com/gluonhq/graal/releases/download/${{ env.GRAALVM_VERSION }}/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev.tar.gz" \
+          echo "Downloading Gluon GraalVM $GRAALVM_TAG..."
+          curl -sL "https://github.com/gluonhq/graal/releases/download/${GRAALVM_TAG}/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev.tar.gz" \
             -o /tmp/graalvm.tar.gz
 
+          echo "Extracting..."
           tar -xzf /tmp/graalvm.tar.gz -C /tmp/
-          EXTRACTED=$(find /tmp -maxdepth 1 -type d -name "graalvm-java*" | head -1)
 
-          # Handle macOS app bundle structure
+          # Find extracted directory — could be graalvm-java* or graalvm-gluon*
+          EXTRACTED=$(find /tmp -maxdepth 1 -type d \( -name "graalvm-java*" -o -name "graalvm-gluon*" \) | head -1)
+          echo "Found: $EXTRACTED"
+
+          # Handle macOS app bundle structure (Contents/Home)
           if [[ -d "$EXTRACTED/Contents/Home" ]]; then
-            mv "$EXTRACTED/Contents/Home" "$GRAALVM_DIR"
+            cp -R "$EXTRACTED/Contents/Home" "$GRAALVM_DIR"
           else
-            mv "$EXTRACTED" "$GRAALVM_DIR"
+            cp -R "$EXTRACTED" "$GRAALVM_DIR"
           fi
 
           echo "GRAALVM_HOME=$GRAALVM_DIR" >> $GITHUB_ENV
           echo "$GRAALVM_DIR/bin" >> $GITHUB_PATH
           rm -f /tmp/graalvm.tar.gz
+          rm -rf "$EXTRACTED"
 
       - name: Download labs-openjdk static libs
         run: |
           echo "Downloading labs-openjdk static libraries..."
-          curl -L "https://github.com/graalvm/labs-openjdk/releases/download/${{ env.GRAALVM_TAG }}/labsjdk-ce-25.0.3+9-${{ env.GRAALVM_TAG }}-darwin-aarch64.tar.gz" \
+          curl -sL "https://github.com/graalvm/labs-openjdk/releases/download/${LABS_JDK_TAG}/${LABS_JDK_VERSION}-${LABS_JDK_TAG}-darwin-aarch64.tar.gz" \
             -o /tmp/labsjdk.tar.gz
 
           tar -xzf /tmp/labsjdk.tar.gz -C /tmp/
           LABS_DIR=$(find /tmp -maxdepth 1 -type d -name "labsjdk-ce-*" | head -1)
+          echo "Found: $LABS_DIR"
+
           STATIC_SRC="$LABS_DIR/Contents/Home/lib/static/darwin-aarch64"
           STATIC_DST="$GRAALVM_HOME/lib/static/darwin-aarch64"
 
@@ -82,8 +84,10 @@ jobs:
 
       - name: Verify GraalVM
         run: |
-          echo "GraalVM: $($GRAALVM_HOME/bin/native-image --version)"
-          echo "Static libs: $(ls $GRAALVM_HOME/lib/static/darwin-aarch64/*.a | wc -l) files"
+          echo "GRAALVM_HOME=$GRAALVM_HOME"
+          "$GRAALVM_HOME/bin/java" -version 2>&1 | head -1
+          "$GRAALVM_HOME/bin/native-image" --version 2>&1 | head -1
+          echo "Static libs: $(ls "$GRAALVM_HOME/lib/static/darwin-aarch64/"*.a 2>/dev/null | wc -l) files"
 
       - name: Determine build mode
         id: mode
