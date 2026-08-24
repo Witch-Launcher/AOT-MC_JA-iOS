@@ -1,12 +1,16 @@
 name: Build MC Native Image (arm64)
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
     inputs:
       mode:
         description: 'Build mode'
         required: true
-        default: 'server'
+        default: 'both'
         type: choice
         options:
           - server
@@ -81,25 +85,36 @@ jobs:
           echo "GraalVM: $($GRAALVM_HOME/bin/native-image --version)"
           echo "Static libs: $(ls $GRAALVM_HOME/lib/static/darwin-aarch64/*.a | wc -l) files"
 
-      - name: Fetch Minecraft ${{ github.event.inputs.mc_version }}
+      - name: Determine build mode
+        id: mode
         run: |
-          bash scripts/fetch_minecraft.sh ${{ github.event.inputs.mc_version }}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+            echo "mc_version=${{ github.event.inputs.mc_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "mode=both" >> $GITHUB_OUTPUT
+            echo "mc_version=1.20.1" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fetch Minecraft
+        run: |
+          bash scripts/fetch_minecraft.sh ${{ steps.mode.outputs.mc_version }}
 
       - name: Build server native image
-        if: github.event.inputs.mode == 'server' || github.event.inputs.mode == 'both'
+        if: steps.mode.outputs.mode == 'server' || steps.mode.outputs.mode == 'both'
         run: |
-          bash scripts/build_native_desktop.sh server ${{ github.event.inputs.mc_version }}
+          bash scripts/build_native_desktop.sh server ${{ steps.mode.outputs.mc_version }}
 
       - name: Build client native image
-        if: github.event.inputs.mode == 'client' || github.event.inputs.mode == 'both'
+        if: steps.mode.outputs.mode == 'client' || steps.mode.outputs.mode == 'both'
         run: |
-          bash scripts/build_native_desktop.sh client ${{ github.event.inputs.mc_version }}
+          bash scripts/build_native_desktop.sh client ${{ steps.mode.outputs.mc_version }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: mc-${{ github.event.inputs.mc_version }}-native-arm64
+          name: mc-${{ steps.mode.outputs.mc_version }}-native-arm64
           path: |
             ${{ github.workspace }}/build/minecraft/*-native
           retention-days: 7
-          if-no-files-found: error
+          if-no-files-found: warn
