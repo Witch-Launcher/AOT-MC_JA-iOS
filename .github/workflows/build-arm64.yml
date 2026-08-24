@@ -37,40 +37,57 @@ jobs:
 
       - name: Download Gluon GraalVM
         run: |
+          set -e
           GRAALVM_DIR="$HOME/graalvm"
-          mkdir -p "$GRAALVM_DIR"
+          STAGING="$HOME/graalvm-staging"
+          mkdir -p "$GRAALVM_DIR" "$STAGING"
 
           echo "Downloading Gluon GraalVM $GRAALVM_TAG..."
           curl -sL "https://github.com/gluonhq/graal/releases/download/${GRAALVM_TAG}/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev.tar.gz" \
             -o /tmp/graalvm.tar.gz
 
-          echo "Extracting..."
-          tar -xzf /tmp/graalvm.tar.gz -C /tmp/
+          echo "Extracting to staging..."
+          tar -xzf /tmp/graalvm.tar.gz -C "$STAGING/"
 
-          # Find extracted directory — could be graalvm-java* or graalvm-gluon*
-          EXTRACTED=$(find /tmp -maxdepth 1 -type d \( -name "graalvm-java*" -o -name "graalvm-gluon*" \) | head -1)
-          echo "Found: $EXTRACTED"
+          # List what was extracted
+          echo "Contents of staging:"
+          ls -la "$STAGING/"
+
+          # Get the extracted directory name
+          EXTRACTED=$(ls -d "$STAGING"/*/ | head -1)
+          echo "Found extracted dir: $EXTRACTED"
 
           # Handle macOS app bundle structure (Contents/Home)
           if [[ -d "$EXTRACTED/Contents/Home" ]]; then
-            cp -R "$EXTRACTED/Contents/Home" "$GRAALVM_DIR"
+            echo "Using Contents/Home structure"
+            cp -R "$EXTRACTED/Contents/Home/"* "$GRAALVM_DIR/"
           else
-            cp -R "$EXTRACTED" "$GRAALVM_DIR"
+            echo "Using flat structure"
+            cp -R "$EXTRACTED"* "$GRAALVM_DIR/"
           fi
 
           echo "GRAALVM_HOME=$GRAALVM_DIR" >> $GITHUB_ENV
           echo "$GRAALVM_DIR/bin" >> $GITHUB_PATH
+
+          # Cleanup
           rm -f /tmp/graalvm.tar.gz
-          rm -rf "$EXTRACTED"
+          rm -rf "$STAGING"
 
       - name: Download labs-openjdk static libs
         run: |
+          set -e
+          STAGING="$HOME/labsjdk-staging"
+          mkdir -p "$STAGING"
+
           echo "Downloading labs-openjdk static libraries..."
           curl -sL "https://github.com/graalvm/labs-openjdk/releases/download/${LABS_JDK_TAG}/${LABS_JDK_VERSION}-${LABS_JDK_TAG}-darwin-aarch64.tar.gz" \
             -o /tmp/labsjdk.tar.gz
 
-          tar -xzf /tmp/labsjdk.tar.gz -C /tmp/
-          LABS_DIR=$(find /tmp -maxdepth 1 -type d -name "labsjdk-ce-*" | head -1)
+          echo "Extracting..."
+          tar -xzf /tmp/labsjdk.tar.gz -C "$STAGING/"
+
+          # Find the extracted dir
+          LABS_DIR=$(ls -d "$STAGING"/*/ | head -1)
           echo "Found: $LABS_DIR"
 
           STATIC_SRC="$LABS_DIR/Contents/Home/lib/static/darwin-aarch64"
@@ -79,8 +96,9 @@ jobs:
           mkdir -p "$STATIC_DST"
           cp "$STATIC_SRC"/*.a "$STATIC_DST/"
           echo "Copied $(ls "$STATIC_DST"/*.a | wc -l) static libraries"
+
           rm -f /tmp/labsjdk.tar.gz
-          rm -rf "$LABS_DIR"
+          rm -rf "$STAGING"
 
       - name: Verify GraalVM
         run: |
