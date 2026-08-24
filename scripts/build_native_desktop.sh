@@ -81,13 +81,13 @@ BUILD_LOG="$LOGS_DIR/build_${MODE}_${MC_VERSION}.log"
 
 "$NATIVE_IMAGE" \
     --no-fallback \
-    --report-unsupported-elements-at-runtime \
+
     --enable-url-protocols=http,https \
     --initialize-at-run-time=io.netty \
     --initialize-at-build-time=net.minecraft.util.profiling.jfr.event,org.apache.logging.log4j,org.apache.logging.slf4j,com.mojang.logging \
     -R:MaxHeapSize="$MAX_HEAP" \
     -H:+UnlockExperimentalVMOptions \
-    -H:+AllowVMInspection \
+    --enable-monitoring \
     -H:+AddAllCharsets \
     -H:IncludeResources="assets/.*|data/.*|META-INF/.*|log4j2.xml" \
     $CONFIG_FLAG \
