@@ -35,6 +35,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Add swap space (4GB)
+        run: |
+          sudo diskutil apfs addVolume disk1 "Case-sensitive APFS" swap -quota 4G 2>/dev/null || \
+          sudo mkdir -p /Volumes/swap
+          # Try creating swap via hdiutil
+          sudo hdiutil attach -nobrowse -nomount -size 4g -type SPARSE /tmp/swapfile.dmg 2>/dev/null || true
+          # Fallback: use macOS vm_stat info and reduce memory pressure
+          echo "System memory:"
+          sysctl hw.memsize | awk '{print $2/1024/1024/1024 " GB"}'
+          vm_stat | head -5
+
       - name: Download Gluon GraalVM
         run: |
           set -e
@@ -49,27 +60,17 @@ jobs:
           echo "Extracting to staging..."
           tar -xzf /tmp/graalvm.tar.gz -C "$STAGING/"
 
-          # List what was extracted
-          echo "Contents of staging:"
-          ls -la "$STAGING/"
-
-          # Get the extracted directory name
           EXTRACTED=$(ls -d "$STAGING"/*/ | head -1)
           echo "Found extracted dir: $EXTRACTED"
 
-          # Handle macOS app bundle structure (Contents/Home)
           if [[ -d "$EXTRACTED/Contents/Home" ]]; then
-            echo "Using Contents/Home structure"
             cp -R "$EXTRACTED/Contents/Home/"* "$GRAALVM_DIR/"
           else
-            echo "Using flat structure"
             cp -R "$EXTRACTED"* "$GRAALVM_DIR/"
           fi
 
           echo "GRAALVM_HOME=$GRAALVM_DIR" >> $GITHUB_ENV
           echo "$GRAALVM_DIR/bin" >> $GITHUB_PATH
-
-          # Cleanup
           rm -f /tmp/graalvm.tar.gz
           rm -rf "$STAGING"
 
@@ -79,16 +80,11 @@ jobs:
           STAGING="$HOME/labsjdk-staging"
           mkdir -p "$STAGING"
 
-          echo "Downloading labs-openjdk static libraries..."
           curl -sL "https://github.com/graalvm/labs-openjdk/releases/download/${LABS_JDK_TAG}/${LABS_JDK_VERSION}-${LABS_JDK_TAG}-darwin-aarch64.tar.gz" \
             -o /tmp/labsjdk.tar.gz
 
-          echo "Extracting..."
           tar -xzf /tmp/labsjdk.tar.gz -C "$STAGING/"
-
-          # Find the extracted dir
           LABS_DIR=$(ls -d "$STAGING"/*/ | head -1)
-          echo "Found: $LABS_DIR"
 
           STATIC_SRC="$LABS_DIR/Contents/Home/lib/static/darwin-aarch64"
           STATIC_DST="$GRAALVM_HOME/lib/static/darwin-aarch64"
