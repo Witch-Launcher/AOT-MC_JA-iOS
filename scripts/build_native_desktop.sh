@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build_native_desktop.sh — Build MC native image for desktop (macOS) for testing
+# build_native_desktop.sh — Build MC native image for desktop (macOS)
 # Usage: ./build_native_desktop.sh [server|client] [version]
 
 set -euo pipefail
@@ -40,17 +40,17 @@ if [[ "$MODE" == "server" ]]; then
         fi
     fi
     JAR="$EXTRACTED"
-    MAX_HEAP="4g"
+    MAX_HEAP="3g"
 elif [[ "$MODE" == "client" ]]; then
     MAIN_CLASS="net.minecraft.client.main.Main"
     JAR="$MC_DIR/client.jar"
-    MAX_HEAP="3g"
+    MAX_HEAP="2g"
 else
-    _abort "Unknown mode: $MODE (use 'server' or 'client')"
+    _abort "Unknown mode: $MODE"
 fi
 
 if [[ ! -f "$JAR" ]]; then
-    _abort "Jar not found: $JAR — run fetch_minecraft.sh first"
+    _abort "Jar not found: $JAR"
 fi
 
 CLASSPATH="$JAR"
@@ -68,17 +68,17 @@ fi
 
 _info "Building $MODE native image for $MC_VERSION..."
 _info "Output: $OUTPUT"
-_info "This may take 20-90 minutes depending on classpath size"
+_info "CP entries: $(echo "$CLASSPATH" | tr ':' '\n' | wc -l) jars"
 
 BUILD_LOG="$LOGS_DIR/build_${MODE}_${MC_VERSION}.log"
 
 "$NATIVE_IMAGE" \
     --no-fallback \
-    -O1 \
-    -J-Xmx5g \
+    -O0 \
+    -J-Xmx6g \
     --enable-url-protocols=http,https \
-    --initialize-at-run-time=io.netty \
-    --initialize-at-build-time=net.minecraft.util.profiling.jfr.event,org.apache.logging.log4j,org.apache.logging.slf4j,com.mojang.logging \
+    --initialize-at-run-time=io.netty,com.mojang.authlib,com.mojang.logging \
+    --initialize-at-build-time=net.minecraft.util.profiling.jfr.event,org.apache.logging.log4j,org.apache.logging.slf4j \
     -R:MaxHeapSize="$MAX_HEAP" \
     -H:+UnlockExperimentalVMOptions \
     -H:DeadlockWatchdogInterval=600 \
